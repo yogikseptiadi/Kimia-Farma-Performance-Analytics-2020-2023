@@ -1,0 +1,124 @@
+select * from tabel_analisa
+
+--
+select 
+sum(a.nett_sales) as Penjualan
+from tabel_analisa as a
+
+select 
+sum(a.nett_profit) as Pendapatan
+from tabel_analisa as a
+
+select 
+Count(a.transaction_id) as Total_Transaksi
+from tabel_analisa as a
+
+select 
+Count(distinct a.customer_name) as Total_Pelanggan
+from tabel_analisa as a
+--pendapatan berdasarkan tahun
+SELECT
+    EXTRACT(YEAR FROM tabel_analisa.date) AS Tahun,
+    SUM(tabel_analisa.nett_profit) AS Pendapatan
+FROM
+    tabel_analisa
+WHERE
+    tabel_analisa.date BETWEEN '2020-01-01' AND '2023-12-31'
+GROUP BY
+    EXTRACT(YEAR FROM tabel_analisa.date)
+ORDER BY
+    Tahun;
+
+select sum(a.nett_profit)
+from tabel_analisa as a
+
+--penjualan berdasarkan tahun
+SELECT
+    EXTRACT(YEAR FROM tabel_analisa.date) AS Tahun,
+    SUM(tabel_analisa.nett_sales) AS Penjualan
+FROM
+    tabel_analisa
+WHERE
+    tabel_analisa.date BETWEEN '2020-01-01' AND '2023-12-31'
+GROUP BY
+    EXTRACT(YEAR FROM tabel_analisa.date)
+ORDER BY
+    Tahun;
+   
+--10 provinsi berdasarkan penjualan(nett_sales)   
+SELECT
+    a.provinsi,
+    SUM(a.nett_sales) AS Penjualan
+FROM
+    tabel_analisa AS a
+GROUP BY
+    a.provinsi
+ORDER BY
+    Penjualan DESC
+LIMIT 10;
+
+--10 provinsi berdasarkan Transaksi
+SELECT
+    a.provinsi,
+    Count(a.transaction_id) AS Total_Transaksi
+FROM
+    tabel_analisa AS a
+GROUP BY
+    a.provinsi
+ORDER BY
+   Total_Transaksi DESC
+LIMIT 10;
+  
+ select provinsi from tabel_analisa ta 
+ 
+ -- 5 Cabang dengan rating tertinggi tetapi rating transaksi terendah
+ SELECT
+    a.branch_name AS nama_cabang,
+    a.kota,
+    a.rating_cabang,
+    a.rating_transaksi
+FROM
+    tabel_analisa AS a
+WHERE
+    a.rating_cabang IN (
+        SELECT
+            rating_cabang
+        FROM
+            tabel_analisa
+        ORDER BY
+            rating_cabang desc
+        LIMIT 5
+    )
+ORDER BY
+    a.rating_transaksi
+limit 5;
+
+--Presentase Transaksi pada nama produk
+SELECT
+    a.product_name AS produk,
+    COUNT(a.transaction_id) AS Jumlah_Transaksi,
+    CAST(COUNT(a.transaction_id) * 100.0 / SUM(COUNT(a.transaction_id)) OVER () AS DECIMAL(18, 2)) AS Presentase
+FROM
+    tabel_analisa AS a
+GROUP BY
+    a.product_name;
+
+
+ --Transaksi Setiap Cabang berdasarkan Tahun
+SELECT
+    EXTRACT(YEAR FROM tabel_analisa.date) AS Tahun,
+    tabel_analisa.branch_name,
+    COUNT(tabel_analisa.transaction_id) AS Transaksi
+FROM
+    tabel_analisa
+WHERE
+    tabel_analisa.date BETWEEN '2020-01-01' AND '2023-12-31'
+GROUP BY
+    EXTRACT(YEAR FROM tabel_analisa.date),
+    tabel_analisa.branch_name
+ORDER BY
+    Tahun;
+
+
+   
+
