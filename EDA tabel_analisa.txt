@@ -118,7 +118,16 @@ GROUP BY
     tabel_analisa.branch_name
 ORDER BY
     Tahun;
+-- Jumlah cabang atau outlet disetiap cabangya
+SELECT 
+    a.provinsi,
+    COUNT(a.branch_name) AS cabang 
+FROM 
+    tabel_analisa AS a
+GROUP BY 
+    a.provinsi
+ORDER BY 
+    cabang DESC;
 
-
-   
-
+select distinct  product_name 
+from tabel_analisa ta 
